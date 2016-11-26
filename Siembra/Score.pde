@@ -23,8 +23,8 @@ class Score { //<>//
      Nice animations of flying birds etc might be added later.
      Variables from game displayed: Score, duration(time), ???*/
 
-    //TODO: warum passiert das???
-    image(scorescreen, 0+width/2, 0+height/2, width, height); 
+    imageMode(CORNER);
+    image(scorescreen, 0, 0, width, height); 
     textSize(24);
     fill(0, (textY-100)/88*255); //makes text completely opaque when Y=188
     //text("SCORE: "+score+"\nDURATION: "+time, textX, textY);
