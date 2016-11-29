@@ -21,13 +21,15 @@ class Game {
   int[] xvals;
   int[] yvals;
   //int [] bvals;
-  
+
+  //General Game
   boolean gameOver;
   int score;
+  int gameTime; // elapsed time since beginning of the game
 
+  int obstacleAmount=15;
   Welle[] wellen = new Welle[15];
-
-  Obstacle plank1, plank2, plank3;
+  Obstacle[] obstacles = new Obstacle[obstacleAmount];
 
   Game() {
     background(#C6F3F5);
@@ -49,9 +51,10 @@ class Game {
     wellen[13] = new Welle (500, #538DBF, 50);
     wellen[14] = new Welle (550, #206198, 50);
 
-    plank1 = new Obstacle();
-    plank2 = new Obstacle();
-    plank3 = new Obstacle();
+    for (int i=0; i<obstacles.length; i++) {
+      obstacles[i] = new Obstacle();
+    }
+
     ellipseMode(CENTER);
     println(lives);
 
@@ -68,20 +71,17 @@ class Game {
     if (lives<=0) {
       gameOver = true;
     }
-    
+
     noStroke();
     background(#C6F3F5);
 
     for (Welle welle : wellen) {
       welle.draw();
     }
-
-    plank1.move();
-    plank1.display();
-    /* plank2.move();
-     plank2.display();
-     plank3.move();
-     plank3.display();*/
+    for (int i = 0; i<obstacles.length; i++) {
+      obstacles[i].move();
+      obstacles[i].display();
+    }
 
     //BOAT
     boatX=mouseX;
@@ -94,24 +94,31 @@ class Game {
      vertical and horizontal distances are checked to be within obstacle radius.
      When both dimensions are reached, one life is lost.
      Check proximity*/
-    if (boatX+boat_r/4 >= plank1.xPos-plank1.o_rad && boatX-boat_r/4 <= plank1.xPos+plank1.o_rad) {
-      if (boatY+boat_r/4 >= plank1.yPos-plank1.o_rad && boatY-boat_r/4 <= plank1.yPos+plank1.o_rad) {
-        lives-=1;
-        plank1.yPos=0-plank1.o_rad;
-        plank1.xPos = random(0, width-10);
-        plank1.o_rad = random(0, 50);
-        plank1.o_speed = random(0.5, 5);
+    for (int i=0; i<obstacles.length; i++) {
+      if (boatX+boat_r/4 >= obstacles[i].xPos-obstacles[i].o_rad && boatX-boat_r/4 <= obstacles[i].xPos+obstacles[i].o_rad) {
+        if (boatY+boat_r/4 >= obstacles[i].yPos-obstacles[i].o_rad && boatY-boat_r/4 <= obstacles[i].yPos+obstacles[i].o_rad) {
+          lives-=1;
+          obstacles[i].yPos=0-obstacles[i].o_rad;
+          obstacles[i].xPos = random(0, width-10);
+          obstacles[i].o_rad = random(0, 50);
+          obstacles[i].o_speed = random(0.5, 5);
+        }
+      }
+      if (boatY+boat_r/4 >= obstacles[i].yPos-obstacles[i].o_rad && boatY-boat_r/4 <= obstacles[i].yPos+obstacles[i].o_rad) {
+        if (boatX+boat_r/4 >= obstacles[i].xPos-obstacles[i].o_rad && boatX-boat_r/4 <= obstacles[i].xPos+obstacles[i].o_rad) {
+          lives-=1;
+          obstacles[i].yPos=0-obstacles[i].o_rad; //resets the obstacle position
+          obstacles[i].xPos = random(0, width-10);
+          obstacles[i].o_rad = random(0, 50);
+          obstacles[i].o_speed = random(0.5, 5);
+        }
       }
     }
-    if (boatY+boat_r/4 >= plank1.yPos-plank1.o_rad && boatY-boat_r/4 <= plank1.yPos+plank1.o_rad) {
-      if (boatX+boat_r/4 >= plank1.xPos-plank1.o_rad && boatX-boat_r/4 <= plank1.xPos+plank1.o_rad) {
-        lives-=1;
-        plank1.yPos=0-plank1.o_rad; //resets the obstacle position
-        plank1.xPos = random(0, width-10);
-        plank1.o_rad = random(0, 50);
-        plank1.o_speed = random(0.5, 5);
-      }
-    }
+    
+    //OBSTACLE-CREATION:
+    //upcoming at this point: if gameTime==common divisor of 30 --> add another obstacle and create it
+    //see below how gameTime constantly grows
+    
     fill (0);
 
     textAlign(CENTER);
@@ -121,7 +128,7 @@ class Game {
 
 
     text("lives: "+lives, width/2, height);
-    
+
     imageMode(CENTER);
     image(boat, mouseX, mouseY, 80, 80);
     stroke(#F51B1B);
@@ -144,6 +151,7 @@ class Game {
       point(i, mouseX-xvals[i]/2);
       noStroke();
     }
+    gameTime += frameRate*50; //equals 1 second if frameRate = 50 Hz
   }
 
   //VISUAL OF THE MOVEMENT OF THE BOAT(CHANGE THE VISUAL IN X, NOT IN Y)
