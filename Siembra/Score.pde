@@ -2,14 +2,14 @@ class Score { //<>//
   //
   int score, time;//just a random number for now
   PImage scorescreen;
-  float textX, textY=100;
+  float textX=width*1/5, textY=100;
   int text2opacity=0;
   boolean text2go=false;
 
   Score(int score) {
     this.score = score;
     //this.time = 0;
-    scorescreen = loadImage("scorescreen.jpg");
+    scorescreen = loadImage("scorescreen.png");
   }
 
   void mousePressed() { 
@@ -29,7 +29,6 @@ class Score { //<>//
     fill(0, (textY-100)/88*255); //makes text completely opaque when Y=188
     //text("SCORE: "+score+"\nDURATION: "+time, textX, textY);
     text("SCORE: " + score, textX, textY);
-    textX=100;
     if (textY<=188) { //downwoard text motion
       textY+=10/frameRate;
     } else {
@@ -37,7 +36,7 @@ class Score { //<>//
     }
     if (text2go==true) {
       fill(0, text2opacity); //continuously makes the text get less transparent
-      text("press any key to continue...", 420, 550);
+      text("press any key to continue...", width*2/3, height*9/10);
       if (text2opacity<=254) {
         text2opacity+=15;
       }

@@ -3,10 +3,11 @@ class Game {
   ////VISUAL POINTS OF THE BOAT
   //int[] xvals;
   //int[] yvals;
-  //int [] bvals;
+  //int[] bvals;
 
   //Collision
   float boatX, boatY;
+  float boat_r = 70; //Radius of boat
 
   //text and image
   PImage boat;
@@ -41,12 +42,12 @@ class Game {
     wellen[6] = new Welle(150, #9DCEF7, 50);
     wellen[7] = new Welle(200, #206198, 50);
     wellen[8] = new Welle(250, #9DCEF7, 50);
-    wellen[9] =new Welle (300, #7EC4FF, 50);
+    wellen[9] = new Welle (300, #7EC4FF, 50);
     wellen[10] = new Welle(350, #538DBF, 50);
     wellen[11] = new Welle(400, #206198, 50);
-    wellen[12] =new Welle (450, #9DCEF7, 50);
+    wellen[12] = new Welle (450, #9DCEF7, 50);
     wellen[13] = new Welle (500, #538DBF, 50);
-    wellen[14] =new Welle (550, #206198, 50);
+    wellen[14] = new Welle (550, #206198, 50);
 
     plank1 = new Obstacle();
     plank2 = new Obstacle();
@@ -86,17 +87,15 @@ class Game {
     boatX=mouseX;
     boatY=mouseY;
     fill(#F8FAF0, 5);
-    ellipse(boatX, boatY, 70, 70);
+    ellipse(boatX, boatY, boat_r, boat_r);
     noStroke();
 
     /*OBSTACLE-BOAT-INTERACTION:
      vertical and horizontal distances are checked to be within obstacle radius.
      When both dimensions are reached, one life is lost.
-     Check proximity
-     so far for plank1 only*/
-    //for (int i=0; i<=3; i++){
-    if (boatX >= plank1.xPos-plank1.o_rad && boatX <= plank1.xPos+plank1.o_rad) {
-      if (boatY >= plank1.yPos-plank1.o_rad && boatY <= plank1.yPos+plank1.o_rad) {
+     Check proximity*/
+    if (boatX+boat_r/4 >= plank1.xPos-plank1.o_rad && boatX-boat_r/4 <= plank1.xPos+plank1.o_rad) {
+      if (boatY+boat_r/4 >= plank1.yPos-plank1.o_rad && boatY-boat_r/4 <= plank1.yPos+plank1.o_rad) {
         lives-=1;
         plank1.yPos=0-plank1.o_rad;
         plank1.xPos = random(0, width-10);
@@ -104,10 +103,10 @@ class Game {
         plank1.o_speed = random(0.5, 5);
       }
     }
-    if (boatY >= plank1.yPos-plank1.o_rad && boatY <= plank1.yPos+plank1.o_rad) {
-      if (boatX >= plank1.xPos-plank1.o_rad && boatX <= plank1.xPos+plank1.o_rad) {
+    if (boatY+boat_r/4 >= plank1.yPos-plank1.o_rad && boatY-boat_r/4 <= plank1.yPos+plank1.o_rad) {
+      if (boatX+boat_r/4 >= plank1.xPos-plank1.o_rad && boatX-boat_r/4 <= plank1.xPos+plank1.o_rad) {
         lives-=1;
-        plank1.yPos=0-plank1.o_rad;
+        plank1.yPos=0-plank1.o_rad; //resets the obstacle position
         plank1.xPos = random(0, width-10);
         plank1.o_rad = random(0, 50);
         plank1.o_speed = random(0.5, 5);
@@ -127,7 +126,7 @@ class Game {
     image(boat, mouseX, mouseY, 80, 80);
     stroke(#F51B1B);
     fill(#F8FAF0, 5);
-    ellipse(mouseX, mouseY, 70, 70);
+    ellipse(mouseX, mouseY, boat_r, boat_r);
     noStroke();
 
     for (int i = 1; i < width; i++) { 
