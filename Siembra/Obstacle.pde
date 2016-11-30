@@ -7,7 +7,6 @@ class Obstacle {
   Obstacle() {
     xPos = random(0, width-10);
     o_rad = random(0, 50);
-    //o_width = 10;
     o_speed = random(0.5, 5);
   }
 

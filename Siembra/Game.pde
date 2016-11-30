@@ -29,7 +29,8 @@ class Game {
 
   int obstacleAmount=15;
   Welle[] wellen = new Welle[15];
-  Obstacle[] obstacles = new Obstacle[obstacleAmount];
+  ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>(obstacleAmount);
+  //Obstacle[] obstacles = new Obstacle[obstacleAmount];
 
   Game() {
     background(#C6F3F5);
@@ -51,8 +52,9 @@ class Game {
     wellen[13] = new Welle (500, #538DBF, 50);
     wellen[14] = new Welle (550, #206198, 50);
 
-    for (int i=0; i<obstacles.length; i++) {
-      obstacles[i] = new Obstacle();
+    //initial obstacle creation
+    for (int i=0; i<obstacles.size(); i++) {
+      obstacles.add(new Obstacle());
     }
 
     ellipseMode(CENTER);
@@ -72,63 +74,71 @@ class Game {
       gameOver = true;
     }
 
+
+    //BACKGROUND AND WAVES
     noStroke();
     background(#C6F3F5);
 
     for (Welle welle : wellen) {
       welle.draw();
     }
-    for (int i = 0; i<obstacles.length; i++) {
-      obstacles[i].move();
-      obstacles[i].display();
-    }
 
-    //BOAT
-    boatX=mouseX;
-    boatY=mouseY;
-    fill(#F8FAF0, 5);
-    ellipse(boatX, boatY, boat_r, boat_r);
-    noStroke();
+
+    //OBSTACLE MOTION
+    for (int i = 0; i<obstacles.size(); i++) {
+      obstacles.get(i).move();
+      obstacles.get(i).display();
+    }
 
     /*OBSTACLE-BOAT-INTERACTION:
      vertical and horizontal distances are checked to be within obstacle radius.
      When both dimensions are reached, one life is lost.
      Check proximity*/
-    for (int i=0; i<obstacles.length; i++) {
-      if (boatX+boat_r/4 >= obstacles[i].xPos-obstacles[i].o_rad && boatX-boat_r/4 <= obstacles[i].xPos+obstacles[i].o_rad) {
-        if (boatY+boat_r/4 >= obstacles[i].yPos-obstacles[i].o_rad && boatY-boat_r/4 <= obstacles[i].yPos+obstacles[i].o_rad) {
+    for (int i=0; i<obstacles.size(); i++) {
+      if (boatX+boat_r/4 >= obstacles.get(i).xPos-obstacles.get(i).o_rad && boatX-boat_r/4 <= obstacles.get(i).xPos+obstacles.get(i).o_rad) {
+        if (boatY+boat_r/4 >= obstacles.get(i).yPos-obstacles.get(i).o_rad && boatY-boat_r/4 <= obstacles.get(i).yPos+obstacles.get(i).o_rad) {
           lives-=1;
-          obstacles[i].yPos=0-obstacles[i].o_rad;
-          obstacles[i].xPos = random(0, width-10);
-          obstacles[i].o_rad = random(0, 50);
-          obstacles[i].o_speed = random(0.5, 5);
+          obstacles.get(i).yPos=0-obstacles.get(i).o_rad;
+          obstacles.get(i).xPos = random(0, width-10);
+          obstacles.get(i).o_rad = random(0, 50);
+          obstacles.get(i).o_speed = random(0.5, 5);
         }
       }
-      if (boatY+boat_r/4 >= obstacles[i].yPos-obstacles[i].o_rad && boatY-boat_r/4 <= obstacles[i].yPos+obstacles[i].o_rad) {
-        if (boatX+boat_r/4 >= obstacles[i].xPos-obstacles[i].o_rad && boatX-boat_r/4 <= obstacles[i].xPos+obstacles[i].o_rad) {
+      if (boatY+boat_r/4 >= obstacles.get(i).yPos-obstacles.get(i).o_rad && boatY-boat_r/4 <= obstacles.get(i).yPos+obstacles.get(i).o_rad) {
+        if (boatX+boat_r/4 >= obstacles.get(i).xPos-obstacles.get(i).o_rad && boatX-boat_r/4 <= obstacles.get(i).xPos+obstacles.get(i).o_rad) {
           lives-=1;
-          obstacles[i].yPos=0-obstacles[i].o_rad; //resets the obstacle position
-          obstacles[i].xPos = random(0, width-10);
-          obstacles[i].o_rad = random(0, 50);
-          obstacles[i].o_speed = random(0.5, 5);
+          obstacles.get(i).yPos=0-obstacles.get(i).o_rad; //resets the obstacle position
+          obstacles.get(i).xPos = random(0, width-10);
+          obstacles.get(i).o_rad = random(0, 50);
+          obstacles.get(i).o_speed = random(0.5, 5);
         }
       }
     }
     
     //OBSTACLE-CREATION:
-    //upcoming at this point: if gameTime==common divisor of 30 --> add another obstacle and create it
-    //see below how gameTime constantly grows
+    //will add a new obstacle every 30 secons
+    //(see below how gameTime constantly increases)
+    if(gameTime % 30 == 0){
+      obstacles.add(new Obstacle());
+    }
     
+    
+    //displayed texts
     fill (0);
-
     textAlign(CENTER);
     textSize(40);
     score = frameCount;
     text(score, width/4, height);
-
-
     text("lives: "+lives, width/2, height);
 
+
+    //BOAT display
+    boatX=mouseX;
+    boatY=mouseY;
+    fill(#F8FAF0, 5);
+    ellipse(boatX, boatY, boat_r, boat_r);
+    noStroke();
+    
     imageMode(CENTER);
     image(boat, mouseX, mouseY, 80, 80);
     stroke(#F51B1B);
@@ -136,6 +146,7 @@ class Game {
     ellipse(mouseX, mouseY, boat_r, boat_r);
     noStroke();
 
+    //BOAT motion animation
     for (int i = 1; i < width; i++) { 
       xvals[i-1] = xvals[i];
     } 
@@ -151,7 +162,7 @@ class Game {
       point(i, mouseX-xvals[i]/2);
       noStroke();
     }
-    gameTime += frameRate*50; //equals 1 second if frameRate = 50 Hz
+    gameTime += frameRate*50; //equals 1 second if frameRate = 50 Hz (??)
   }
 
   //VISUAL OF THE MOVEMENT OF THE BOAT(CHANGE THE VISUAL IN X, NOT IN Y)
