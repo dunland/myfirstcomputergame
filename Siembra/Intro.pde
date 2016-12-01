@@ -8,8 +8,10 @@ class Intro {
 
   Intro(Minim minim) {
     player = minim.loadFile("MAL.mp3");
-    player.play();
+    //player.play();
   }
+
+
 
   void draw() {
     background(#A6EAE5);

@@ -27,16 +27,13 @@ class Game {
   //General Game
   boolean gameOver;
   int score;
-  int gameTime=millis(); // elapsed time since beginning of the game
+  int gameTime; // elapsed time since beginning of the game
+
+  int obstacleAmount=15;
   Welle[] wellen = new Welle[15];
-
-  int obstacleIncrement=5; // time in seconds after which 1 new object is created
-  int obstacleAmount=5; //start amount of obstacles
-  ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
-
+  ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>(obstacleAmount);
 
   Game() {
-    println("go!");
     background(#C6F3F5);
 
     wellen[0] = new Welle(0, #A3CBE3, 250);
@@ -57,12 +54,12 @@ class Game {
     wellen[14] = new Welle (550, #206198, 50);
 
     //initial obstacle creation
-    for (int i=0; i<obstacleAmount; i++) {
-      println("initializing object "+i);
+    for (int i=0; i<obstacles.size(); i++) {
       obstacles.add(new Obstacle());
     }
 
     ellipseMode(CENTER);
+    println(lives);
 
     boat =loadImage("boat.png");
 
@@ -97,36 +94,34 @@ class Game {
      When both dimensions are reached, one life is lost.
      Check proximity*/
     for (int i=0; i<obstacles.size(); i++) {
-      if (boatX+boat_r/2 >= obstacles.get(i).xPos-obstacles.get(i).o_rad && boatX-boat_r/2 <= obstacles.get(i).xPos+obstacles.get(i).o_rad) {
-        if (boatY+boat_r/2 >= obstacles.get(i).yPos-obstacles.get(i).o_rad && boatY-boat_r/2 <= obstacles.get(i).yPos+obstacles.get(i).o_rad) {
+      if (boatX+boat_r/4 >= obstacles.get(i).xPos-obstacles.get(i).o_rad && boatX-boat_r/4 <= obstacles.get(i).xPos+obstacles.get(i).o_rad) {
+        if (boatY+boat_r/4 >= obstacles.get(i).yPos-obstacles.get(i).o_rad && boatY-boat_r/4 <= obstacles.get(i).yPos+obstacles.get(i).o_rad) {
           lives-=1;
           obstacles.get(i).yPos=0-obstacles.get(i).o_rad;
           obstacles.get(i).xPos = random(0, width-10);
-          obstacles.get(i).o_rad = random(10, 50);
+          obstacles.get(i).o_rad = random(0, 50);
           obstacles.get(i).o_speed = random(0.5, 5);
         }
       }
-      if (boatY+boat_r/2 >= obstacles.get(i).yPos-obstacles.get(i).o_rad && boatY-boat_r/2 <= obstacles.get(i).yPos+obstacles.get(i).o_rad) {
-        if (boatX+boat_r/2 >= obstacles.get(i).xPos-obstacles.get(i).o_rad && boatX-boat_r/2 <= obstacles.get(i).xPos+obstacles.get(i).o_rad) {
+      if (boatY+boat_r/4 >= obstacles.get(i).yPos-obstacles.get(i).o_rad && boatY-boat_r/4 <= obstacles.get(i).yPos+obstacles.get(i).o_rad) {
+        if (boatX+boat_r/4 >= obstacles.get(i).xPos-obstacles.get(i).o_rad && boatX-boat_r/4 <= obstacles.get(i).xPos+obstacles.get(i).o_rad) {
           lives-=1;
           obstacles.get(i).yPos=0-obstacles.get(i).o_rad; //resets the obstacle position
           obstacles.get(i).xPos = random(0, width-10);
-          obstacles.get(i).o_rad = random(10, 50);
+          obstacles.get(i).o_rad = random(0, 50);
           obstacles.get(i).o_speed = random(0.5, 5);
         }
       }
     }
-    
     if (lives<=0) {
       gameOver = true;
     }
 
     //OBSTACLE-CREATION:
-    //will add a new obstacle every [obstacleIncrement] seconds
+    //will add a new obstacle every 30 secons
     //(see below how gameTime constantly increases)
-    if (gameTime % (obstacleIncrement*1000) <= 10) {
+    if (gameTime % 30 == 0) {
       obstacles.add(new Obstacle());
-      println("obstacles: "+obstacles.size()+" gameTime: "+gameTime);
     }
 
 
@@ -174,7 +169,7 @@ class Game {
     //  point(i, mouseX-xvals[i]/2);
     //  noStroke();
     //}
-    gameTime = millis();
+    gameTime += frameRate*50; //equals 1 second if frameRate = 50 Hz (??)
   }
 
   //VISUAL OF THE MOVEMENT OF THE BOAT(CHANGE THE VISUAL IN X, NOT IN Y)

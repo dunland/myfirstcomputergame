@@ -6,7 +6,7 @@ class Obstacle {
 
   Obstacle() {
     xPos = random(0, width-10);
-    o_rad = random(0, 50);
+    o_rad = random(10, 50);
     o_speed = random(0.5, 5);
   }
 
@@ -20,7 +20,7 @@ class Obstacle {
     yPos+=o_speed;
     if (yPos>=height+o_rad) { //makes obstacles disappear only after leaving the display field entirely
       xPos = random(0, width-10);
-      o_rad = random(0, 50);
+      o_rad = random(10, 50);
       o_speed = random(0.5, 5);
       yPos=0-o_rad;
     }
