@@ -8,7 +8,7 @@ class Intro {
 
   Intro(Minim minim) {
     player = minim.loadFile("MAL.mp3");
-    //player.play();
+    player.play();
   }
 
 

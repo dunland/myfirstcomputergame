@@ -4,8 +4,10 @@ class Game {
   //int[] xvals;
   //int[] yvals;
   //int[] bvals;
+  int num=40;
+  float mx[] =new float [num];
+  float my[] =new float [num];
 
-  //Collision
 
   //text and image
   PImage boat;
@@ -68,7 +70,7 @@ class Game {
 
     xvals=new int[width];
     yvals=new int[height];
-    //bvals =new int [height];
+    int arrayindex=0;
   }
 
 
@@ -116,7 +118,7 @@ class Game {
         }
       }
     }
-    
+
     if (lives<=0) {
       gameOver = true;
     }
@@ -175,22 +177,31 @@ class Game {
     //  noStroke();
     //}
     gameTime = millis();
+
+    for (int i = 1; i < width; i++) { 
+      xvals[i-1] = xvals[i];
+    } 
+    for (int i = 1; i < height; i++) {
+      yvals[i-1] = yvals[i];
+    }
+    // Add the new values to the end of the array 
+    xvals[width-1] = mouseX; //move of the mouse on X 
+    yvals[height-1] = mouseX;
+
+    for (int i=1; i<width; i++) {
+      stroke(0);
+      point(i, mouseX-xvals[i]/2);
+      noStroke();
+    }
+    fill(#7ECAF0, 20);
+    int which = frameCount % num;
+    mx[which] = mouseX-1;
+    my[which] = mouseY+50;
+
+    for (int i = 0; i < num; i++) {
+      // which+1 is the smallest (the oldest in the array)
+      int index = (which+1 + i) % num;
+      ellipse(mx[index], my[index], i, i);
+    }
   }
-
-  //VISUAL OF THE MOVEMENT OF THE BOAT(CHANGE THE VISUAL IN X, NOT IN Y)
-  //for (int i = 1; i < width; i++) { 
-  // xvals[i-1] = xvals[i]; 
-  // yvals[i-1] = yvals[i];
-  // 
-  //// Add the new values to the end of the array x
-  //vals[width-1] = mouseX; //move of the mouse on X y
-  //vals[height-1] = mouseX;
-
-
-  //or (int i=1; i<width; i++) {
-
-  // stroke(0);
-  // point(i, mouseX-xvals[i]/2);
-  // noStroke();
-  //
 }
