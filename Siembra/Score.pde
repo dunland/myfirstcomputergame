@@ -1,6 +1,6 @@
 class Score { //<>//
   //
-  int score, time;//just a random number for now
+  int score, time;
   PImage scorescreen;
   float textX=width*1/5, textY=100;
   int text2opacity=0;
